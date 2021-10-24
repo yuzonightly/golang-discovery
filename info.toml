@@ -1,0 +1,16 @@
+# name if the filename -> filename.go
+# HELLO WORLD
+
+[[exercises]]
+name = "helloworld"
+path = "exercises/helloworld/"
+mode = "compile"
+hint = """ """
+
+# VARIABLES
+
+[[exercises]]
+name = "variables1"
+path = "exercises/variables/"
+mode = "compile"
+hint = """ """
