@@ -3,7 +3,7 @@
 
 [[exercises]]
 name = "helloworld"
-path = "exercises/helloworld/"
+path = "exercises/helloworld/helloworld.go"
 mode = "compile"
 hint = """ """
 
@@ -11,6 +11,6 @@ hint = """ """
 
 [[exercises]]
 name = "variables1"
-path = "exercises/variables/"
+path = "exercises/variables/variables1.go"
 mode = "compile"
 hint = """ """

@@ -8,8 +8,9 @@ use std::process::{self, Command};
 mod ui;
 
 #[inline]
-fn clean() {
-    let _ignored = remove_file(&temp_file());
+fn clean(name: &String) {
+    // let _ignored = remove_file(&temp_file());
+    let _ignored = remove_file(name);
 }
 
 // See Exercise struct
@@ -79,54 +80,29 @@ fn temp_file() -> String {
 }
 
 // Compile the exercise
-fn compile_exercise(exercise: &Exercise) {
+fn compile_exercise(exercise: &Exercise) -> Result<CompiledExercise, ExerciseOutput> {
     let cmd = match exercise.mode {
-        // cd /home/space/GitHub/golang-discovery/exercises/helloworld/helloworld.go && go build -o ../../helloworld
         Mode::Compile => {
             // let temp_file = &temp_file();
-            // let temp_file = format!("../../{}", temp_file);
             // let exdir = PathBuf::from(exercise.path.to_str().unwrap());
             // let canodir = fs::canonicalize(&exdir).unwrap();
             // println!("{:?}", fs::canonicalize(&exdir).unwrap());
-            println!("wat");
-            Command::new("cd")
-            // .arg(canodir)
-            .arg(std::env::current_dir().unwrap().to_str().unwrap())
-            // .arg("&&")
-            // .arg("touch")
-            // .arg("yo")
-            // .args(&[exercise.path.to_str().unwrap(), "-o", &temp_file()])
-            // .arg(fs::canonicalize(&exdir).unwrap())
-            // .args(&["&&", "touch", "hello"])
-            .output()
-            // println!("{:?}", cmdd);
-            // cmdd
-
-            // cmdd.output()
-            // .args(&["&&", "go", "build", "-o", &temp_file])
-            // .output()
+            Command::new("go")
+                .arg("build")
+                .arg(exercise.path.to_str().unwrap())
+                .output()
         }
-        // Mode::Test => Command::new("rustc")
-        //     .args(&[
-        //         "--test",
-        //         exercise.path.to_str().unwrap(),
-        //         "-o",
-        //         &temp_file(),
-        //     ])
-        //     .args(RUSTC_COLOR_ARGS)
-        //     .output(),
     }
     .expect("Failed to execute 'compilation'");
 
-    // if cmd.status.success() {
-    //     Ok(CompiledExercise { exercise })
-    // } else {
-    //     clean();
-    //     Err(ExerciseOutput {
-    //         stdout: String::from_utf8_lossy(&cmd.stdout).to_string(),
-    //         stderr: String::from_utf8_lossy(&cmd.stderr).to_string(),
-    //     })
-    // }
+    if cmd.status.success() {
+        Ok(CompiledExercise { exercise })
+    } else {
+        Err(ExerciseOutput {
+            stdout: String::from_utf8_lossy(&cmd.stdout).to_string(),
+            stderr: String::from_utf8_lossy(&cmd.stderr).to_string(),
+        })
+    }
 }
 
 // Run the exercise
@@ -136,7 +112,7 @@ fn run(exercise: &Exercise) -> Result<ExerciseOutput, ExerciseOutput> {
         Mode::Compile => "",
     };
 
-    let cmd = Command::new(&temp_file())
+    let cmd = Command::new(format!("./{}", exercise.name))
         .arg(arg)
         .output()
         .expect("Failed to execute 'run'");
@@ -164,45 +140,43 @@ fn find_exercise<'a>(name: &str, exercises: &'a [Exercise]) -> &'a Exercise {
         })
 }
 
+// for now we just execute every exercise
 fn main() {
     let name = "helloworld"; // arg --all(a) --specify(s)
                              // let path = Path::new("./exercises");
     let toml_str = &fs::read_to_string("info.toml").unwrap();
     let exercises = toml::from_str::<ExerciseList>(toml_str).unwrap().exercises;
     println!("{}", std::env::current_dir().unwrap().to_str().unwrap());
+
     let exercise = find_exercise(name, &exercises);
+    // let compilation_result = compile_exercise(exercise);
 
-    let compilation_result = compile_exercise(exercise);
+    exercises.iter().for_each(|exercise| {
+        let compilation_result = compile_exercise(exercise);
 
-
-
-    // exercises.iter().for_each(|exercise| {
-    //     let compilation_result = compile_exercise(exercise);
-
-    //     match compilation_result {
-    //         Ok(compiled_exercise) => {
-    //             println!("Exercise compiled successfully.");
-    //             let run_exercise = run(compiled_exercise.exercise);
-    //             match run_exercise {
-    //                 Ok(output) => {
-    //                     success!("{} executed successfully! Here's the output:", exercise);
-    //                     println!("{}", output.stdout)
-    //                 }
-    //                 Err(output) => {
-    //                     run_error!("Execution of {} failed! Here's the output:", exercise);
-    //                     println!("{}", output.stderr);
-    //                 }
-    //             };
-    //         }
-    //         Err(output) => {
-    //             compilation_error!(
-    //                 "Compiling of {} failed! Please correct it and try again. Here's the output:\n",
-    //                 exercise
-    //             );
-    //             println!("{}", output.stderr);
-    //         }
-    //     };
-    // });
-
-    // clean();
+        match compilation_result {
+            Ok(compiled_exercise) => {
+                println!("Exercise compiled successfully.");
+                let run_exercise = run(compiled_exercise.exercise);
+                match run_exercise {
+                    Ok(output) => {
+                        success!("{} executed successfully! Here's the output:", exercise);
+                        println!("{}", output.stdout)
+                    }
+                    Err(output) => {
+                        run_error!("Execution of {} failed! Here's the output:", exercise);
+                        println!("{}", output.stderr);
+                    }
+                };
+            }
+            Err(output) => {
+                compilation_error!(
+                    "Compiling of {} failed! Please correct it and try again. Here's the output:\n",
+                    exercise
+                );
+                println!("{}", output.stderr);
+            }
+        };
+        clean(&exercise.name);
+    });
 }
