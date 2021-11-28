@@ -14,3 +14,10 @@ cargo run -- file FILENAME # run specific file
 cargo run -- dir FOLDERNAME # run files inside a folder
 cargo run -- --all # run all files
 ```
+
+### Example
+
+```bash
+cargo run -- file variables1 # run variables1.go
+cargo run -- dir variables # run files inside the folder variables
+```
