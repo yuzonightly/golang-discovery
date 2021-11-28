@@ -10,8 +10,8 @@ _Tested on Linux. Does not run on Windows._
 
 ```bash
 cargo run -- --help
-cargo run -- file FILENAME # run specific file
-cargo run -- dir FOLDERNAME # run files inside a folder
+cargo run -- file FILENAME # run the specified file
+cargo run -- dir FOLDERNAME # run files under the specified directory
 cargo run -- --all # run all files
 ```
 
@@ -19,5 +19,5 @@ cargo run -- --all # run all files
 
 ```bash
 cargo run -- file variables1 # run variables1.go
-cargo run -- dir variables # run files inside the folder variables
+cargo run -- dir variables # run files under the folder variables
 ```
