@@ -69,6 +69,15 @@ impl Display for Exercise {
     }
 }
 
+// Run go mod tidy
+fn run_go_mod_tidy() -> std::process::Output {
+    Command::new("go")
+        .arg("mod")
+        .arg("tidy")
+        .output()
+        .expect("Failed to execute go mod tidy.")
+}
+
 // Compile the exercise
 fn compile_exercise(exercise: &Exercise) -> Result<CompiledExercise, ExerciseOutput> {
     let cmd = match exercise.mode {
@@ -184,6 +193,18 @@ struct RunDirArgs {
 }
 
 fn main() {
+    let tidy = run_go_mod_tidy();
+    if tidy.status.success() {
+        success!("{}", "go mod tidy executed successfully!");
+    } else {
+        let stderr = String::from_utf8_lossy(&tidy.stderr).to_string();
+        compilation_error!(
+            "Execution of go mod tidy failed! Here's the output:\n{}",
+            stderr
+        );
+        std::process::exit(0);
+    }
+
     let args: Args = argh::from_env();
 
     let toml_str = &fs::read_to_string("info.toml").unwrap();
@@ -194,7 +215,6 @@ fn main() {
             let compilation_result = compile_exercise(exercise);
             match compilation_result {
                 Ok(compiled_exercise) => {
-                    println!("Exercise compiled successfully.");
                     let run_exercise = run(compiled_exercise.exercise);
                     match run_exercise {
                         Ok(output) => {
@@ -233,7 +253,6 @@ fn main() {
 
             match compilation_result {
                 Ok(compiled_exercise) => {
-                    println!("Exercise compiled successfully.");
                     let run_exercise = run(compiled_exercise.exercise);
                     match run_exercise {
                         Ok(output) => {
@@ -262,7 +281,6 @@ fn main() {
                 let compilation_result = compile_exercise(exercise);
                 match compilation_result {
                     Ok(compiled_exercise) => {
-                        println!("Exercise compiled successfully.");
                         let run_exercise = run(compiled_exercise.exercise);
                         match run_exercise {
                             Ok(output) => {
