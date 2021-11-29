@@ -2,7 +2,9 @@
 
 rust-lang/rustlings, but with `a few modifications :)`
 
-Doing simple things when my mind is tired :P. Maybe this repository will become a place I can use to explore various libraries.
+Doing simple things when my mind is tired :P... Simple exercises in `go`.
+
+Maybe this repository will become a place I can use to explore various `go` libraries.
 
 _Tested on Linux. Does not run on Windows._
 
