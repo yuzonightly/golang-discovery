@@ -12,14 +12,14 @@ _Tested on Linux. Does not run on Windows._
 
 ```bash
 cargo run -- --help
-cargo run -- file FILENAME # run the specified file
-cargo run -- dir FOLDERNAME # run files under the specified directory
-cargo run -- --all # run all files
+cargo run -- file FILENAME # runs the specified file
+cargo run -- dir FOLDERNAME # runs files located under the specified directory
+cargo run -- --all # runs all files
 ```
 
 ### Example
 
 ```bash
-cargo run -- file variables1 # run variables1.go
-cargo run -- dir variables # run files under the folder variables
+cargo run -- file variables1 # runs variables1.go
+cargo run -- dir variables # runs files located under the folder variables
 ```
