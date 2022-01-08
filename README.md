@@ -12,8 +12,8 @@ _Tested on Linux. Does not run on Windows._
 
 ```bash
 cargo run -- --help
-cargo run -- file FILENAME # runs the specified file
-cargo run -- dir FOLDERNAME # runs files located under the specified directory
+cargo run -- file <file_name> # runs the specified file
+cargo run -- dir <folder_name> # runs files located under the specified directory
 cargo run -- --all # runs all files
 ```
 
