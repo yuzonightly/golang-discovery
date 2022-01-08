@@ -1,6 +1,6 @@
 # golang-discovery
 
-rust-lang/rustlings, but with `a few modifications :)`
+rust-lang/rustlings, but with _a few modifications :)_.
 
 Simple exercises in Go.
 
